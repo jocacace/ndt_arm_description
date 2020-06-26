@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<robot name="ndt_arm" xmlns:xacro="http://wiki.ros.org/xacro">
+	<xacro:include filename="$(find ndt_arm_description)/urdf/ndt_arm_macro.xacro" />
+		<!--
+		<link name="world" />									
+		-->		
+    <link name="fixed_base">
+      <inertial>
+        <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+        <mass value="10"/>
+        <inertia ixx="0.05"  ixy="0"  ixz="0" iyy="0.06" iyz="0" izz="0.03" />
+      </inertial>
+
+      <visual>
+        <origin xyz="0 0.0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://ndt_arm_description/meshes/tarot960res.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Grey"/>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0.0 0" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://ndt_arm_description/meshes/tarot960res.stl" scale="0.001 0.001 0.001"/>
+        </geometry>
+        <material name="Grey"/>
+      </collision>
+
+			<self_collision_checking>
+				<origin xyz="0 0 0" rpy="0 0 0"/>
+				<geometry>
+					<capsule radius="0.15" length="0.25"/>
+				</geometry>
+			</self_collision_checking>
+
+
+    </link>
+		
+
+
+
+	<xacro:ndt_arm  name="ndt_arm" parent="fixed_base">
+		<origin xyz="0.0 -0.3 -0.05" rpy="0 1.57 -1.57" />
+	</xacro:ndt_arm>
+		<!--
+	<xacro:ndt_arm  name="ndt_arm" parent="world">
+		<origin xyz="0.0 0.0 0.0" rpy="0 0.0 0.0" />
+	</xacro:ndt_arm>
+		-->
+</robot>

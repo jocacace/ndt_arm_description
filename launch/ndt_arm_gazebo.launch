@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+
+<launch>
+
+		<arg name="x" default="0"/>
+    <arg name="y" default="0"/>
+    <arg name="z" default="0.15"/>
+    <arg name="R" default="0"/>
+    <arg name="P" default="0"/>
+    <arg name="Y" default="0"/>
+  <!-- these are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="paused" default="true"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+<!--
+  <arg name="hardware_interface" default="EffortJointInterface"/>
+-->
+  <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <!--<arg name="world_name" value="$(find lbr_iiwa_gazebo)/worlds/lbr_iiwa_object.world"/>-->
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="use_sim_time" value="$(arg use_sim_time)"/>
+    <arg name="headless" value="$(arg headless)"/>
+  </include>
+
+
+  <param name="robot_description" command="$(find xacro)/xacro '$(find ndt_arm_description)/urdf/ndt_arm.xacro'" />
+
+
+	<rosparam file="$(find ndt_arm_description)/config/controllers.yaml" command="load"/>
+	<!--
+	<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/ndt_arm" args="joint_state_controller
+		ndt_arm_joint_1_effort_controller
+		ndt_arm_joint_2_effort_controller
+		ndt_arm_joint_3_effort_controller
+		ndt_arm_joint_4_effort_controller
+		ndt_arm_joint_5_effort_controller" />
+	
+
+-J ndt_arm_joint_1 -1.5758
+  -J ndt_arm_joint_2 2.8
+  -J ndt_arm_joint_3 -3
+  -J ndt_arm_joint_4 0.02
+  -J ndt_arm_joint_5 0.0
+-->
+
+<!---->
+<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false" output="screen" ns="/ndt_arm" args="joint_state_controller
+		joint1_position_controller
+		joint2_position_controller
+		joint3_position_controller
+		joint4_position_controller
+		joint5_position_controller
+		"/>
+<!---->
+
+
+
+  <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+	args="-urdf -model ndt_arm -param robot_description -x $(arg x) -y $(arg y) -z $(arg z) -R $(arg R) -P $(arg P) -Y $(arg Y)
+  -J ndt_arm_joint_1 0
+  -J ndt_arm_joint_2 1.57
+  -J ndt_arm_joint_3 0
+  -J ndt_arm_joint_4 0.0
+  -J ndt_arm_joint_5 1.57" />
+
+</launch>
